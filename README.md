@@ -5,6 +5,7 @@ Sam Gee
 This website will retrieve randomized dog photos using The Dog API https://thedogapi.com/
 
 Step 1: Download files 
+
 Step 2: Select "index.html" and open in desired browser
 
 How to run program:
