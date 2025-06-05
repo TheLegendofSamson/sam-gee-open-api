@@ -2,29 +2,11 @@ const photoUrl = "https://api.thedogapi.com/v1/images/search";
 const breedUrl = "https://api.thedogapi.com/v1/breeds";
 let breedId;
 
-//fetching all breed data
-fetch(breedUrl)
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error("Request failed");
-    }
-    return response.json();
-  })
-
-  .then((baseData) => {
-    const allBreeds = baseData;
-    console.log(allBreeds);
-  })
-
-  .catch((error) => {
-    console.error("An error occurred:", error);
-  });
-
 //callback function for randomizeButton event listener
 function randomizePhoto(event) {
   event.preventDefault();
 
-  //fetching API data
+  //fetching API image data
   fetch(photoUrl)
     .then((response) => {
       if (!response.ok) {
@@ -57,15 +39,16 @@ function randomizePhoto(event) {
         breedId = addImage.id;
         const breedName = document.getElementById("breed-name");
 
+        //checking if breed name exists
         if (breedName !== null) {
           breedName.innerHTML = "";
         }
 
-        //adding detail button
+        //adding detail/receive breed button
         if (document.getElementById("detail-button") === null) {
           const detailSection = document.getElementById("dog-details");
           const detailButton = document.createElement("button");
-          detailButton.innerText = "Get Details";
+          detailButton.innerText = "Receive Breed";
           detailButton.setAttribute("type", "button");
           detailButton.setAttribute("id", "detail-button");
           //detail button event listener function
@@ -89,7 +72,7 @@ function getDetails(event) {
   const breedsUrl = `https://api.thedogapi.com/v1/images/${breedId}`;
   console.log(breedsUrl);
 
-  //fetching API data
+  //fetching API breed data from images
   fetch(breedsUrl)
     .then((response) => {
       if (!response.ok) {
@@ -102,9 +85,11 @@ function getDetails(event) {
       const breedData = moreData;
       console.log(breedData);
 
+      //declaring detailSection and breedName in new scope
       const detailSection = document.getElementById("dog-details");
       let breedName = document.getElementById("breed-name");
-
+      
+      //creating breed name if it doesn't already exist
       if (breedName === null) {
         breedName = document.createElement("p");
         breedName.id = "breed-name";
@@ -132,3 +117,32 @@ function getDetails(event) {
 //event listener for randomize Button
 const randomizeButton = document.getElementsByName("randomize-dogs");
 randomizeButton[0].addEventListener("click", randomizePhoto);
+
+//fetching all breed data
+fetch(breedUrl)
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error("Request failed");
+    }
+    return response.json();
+  })
+
+  .then((baseData) => {
+    const allBreeds = baseData;
+    console.log(allBreeds);
+
+    //finding breed Section
+    const breedSection = document.getElementById("all-breeds");
+    const breedList = breedSection.getElementsByTagName("ul")[0];
+
+    //displaying breed list
+    for (let i = 0; i < allBreeds.length; i++) {
+      const breed = document.createElement("li");
+      breed.innerHTML = `${allBreeds[i].name}`;
+      breedList.appendChild(breed);
+    }
+  })
+
+  .catch((error) => {
+    console.error("An error occurred:", error);
+  });
